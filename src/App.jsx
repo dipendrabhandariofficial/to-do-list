@@ -102,7 +102,8 @@ const App = () => {
   };
 
   return (
-    <div className="w-screen  min-h-screen bg-gradient-to-br from-sky-300 to-indigo-400 flex items-center justify-center p-6 ">
+    <div className="w-screen  min-h-screen bg-gradient-to-br from-sky-300 to-indigo-400 flex items-center justify-center p-6 
+     "onKeyDown={(e)=>e.key==="Enter"&&{resetTaskForm}}>
       <div className="w-full max-w-md bg-white shadow-xl rounded-lg p-6 relative dark:bg-gray-800 dark:text-white">
         <h1 className="text-3xl font-semibold text-gray-700 mb-8 text-center dark:text-gray-300">
           Your To-Do List
@@ -110,8 +111,8 @@ const App = () => {
 
         <button
           onClick={handleOpenAddTask}
-          className="bg-yellow-400  hover:bg-yellow-500 dark:bg-gray-700 dark:hover:bg-gray-800 dark:text-gray-300   text-white w-full py-3 rounded-lg mb-6 font-medium transition duration-200"
-        >
+          className="cursor-pointer bg-gradient-to-bl from-orange-400 to-yellow-400 hover:bg-yellow-500 dark:bg-gradient-to-bl dark:from-gray-700 dark:to-gray-700 dark:hover:bg-gray-900 dark:text-gray-300 text-white w-full py-3 rounded-sm mb-6 font-medium "
+>
           + Add New Task
         </button>
 
