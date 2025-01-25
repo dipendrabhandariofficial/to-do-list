@@ -102,8 +102,11 @@ const App = () => {
   };
 
   return (
-    <div className="w-screen  min-h-screen bg-gradient-to-br from-sky-300 to-indigo-400 flex items-center justify-center p-6 
-     "onKeyDown={(e)=>e.key==="Enter"&&{resetTaskForm}}>
+    <div
+      className="w-screen  min-h-screen bg-gradient-to-br from-sky-300 to-indigo-400 flex items-center justify-center p-6 
+     "
+      onKeyDown={(e) => e.key === "Enter" && { resetTaskForm }}
+    >
       <div className="w-full max-w-md bg-white shadow-xl rounded-lg p-6 relative dark:bg-gray-800 dark:text-white">
         <h1 className="text-3xl font-semibold text-gray-700 mb-8 text-center dark:text-gray-300">
           Your To-Do List
@@ -112,11 +115,11 @@ const App = () => {
         <button
           onClick={handleOpenAddTask}
           className="cursor-pointer bg-gradient-to-bl from-orange-400 to-yellow-400 hover:bg-yellow-500 dark:bg-gradient-to-bl dark:from-gray-700 dark:to-gray-700 dark:hover:bg-gray-900 dark:text-gray-300 text-white w-full py-3 rounded-sm mb-6 font-medium "
->
+        >
           + Add New Task
         </button>
 
-        <div className="text-gray-800 dark:text-gray-300">
+        <div className="text-gray-800 dark:text-gray-300 ">
           <ul className="space-y-4">
             {tasks.map((task) => (
               <li
@@ -130,12 +133,18 @@ const App = () => {
                   className="cursor-pointer"
                 />
                 <span
-                  className={`flex-grow ml-3 text-lg font-medium ${
+                  className={`flex-grow ml-3 text-lg font-medium overflow-hidden truncate mr-2 ${
                     task.completed ? "line-through text-gray-400" : ""
                   }`}
                 >
-                  {task.title}
+                  <p className="font-extralight text-xl overflow-hidden truncate">
+                    {task.title}
+                  </p>
+                  <p className={`text-sm font-sans font-thin overflow-x-hidden no-underline truncate ${task.completed?"hidden":""}  `}>
+                    {task.description}
+                  </p>
                 </span>
+
                 <div className="flex gap-4">
                   <button
                     onClick={() => handleEditTask(task)}
@@ -157,7 +166,7 @@ const App = () => {
 
         {(editTask || isAddingTask) && (
           <div className="absolute top-0 left-0  flex items-center justify-center ">
-            <div className="bg-white  p-6 rounded-lg shadow-lg w-full sm:w-md dark:bg-gray-700">
+            <div className="bg-white  p-6 rounded-lg shadow-lg w-full h-full sm:w-md dark:bg-gray-700">
               <h2 className="text-xl font-semibold mb-4 text-center dark:text-gray-300">
                 {editTask ? "Edit Task" : "Add Task"}
               </h2>
