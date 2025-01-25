@@ -110,7 +110,7 @@ const App = () => {
 
         <button
           onClick={handleOpenAddTask}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white w-full py-3 rounded-lg mb-6 font-medium transition duration-200"
+          className="bg-yellow-400  hover:bg-yellow-500 dark:bg-gray-700 dark:hover:bg-gray-800 dark:text-gray-300   text-white w-full py-3 rounded-lg mb-6 font-medium transition duration-200"
         >
           + Add New Task
         </button>
