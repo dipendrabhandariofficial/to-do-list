@@ -137,10 +137,22 @@ const App = () => {
                     task.completed ? "line-through text-gray-400" : ""
                   }`}
                 >
-                  <p className="font-extralight text-xl overflow-hidden truncate">
+                  <p
+                    className="font-extralight text-xl overflow-hidden truncate cursor-pointer hover:focus "
+                    title={task.title}
+                    onClick={() => handleEditTask(task)} // Trigger function on click
+                   // onKeyDown={(e) => e.key === "Enter" && handleEditTask(task)} // Trigger function on Enter key
+                  >
                     {task.title}
                   </p>
-                  <p className={`text-sm font-sans font-thin overflow-x-hidden no-underline truncate ${task.completed?"hidden":""}  `}>
+                  <p
+                    className={`text-sm font-sans font-thin overflow-x-hidden no-underline truncate cursor-pointer ${
+                      task.completed ? "hidden" : ""
+                    }  `}
+                    tabIndex={0}
+                    title={task.description}
+                    onClick={() => handleEditTask(task)}
+                  >
                     {task.description}
                   </p>
                 </span>
@@ -165,8 +177,8 @@ const App = () => {
         </div>
 
         {(editTask || isAddingTask) && (
-          <div className="absolute top-0 left-0  flex items-center justify-center ">
-            <div className="bg-white  p-6 rounded-lg shadow-lg w-full h-full sm:w-md dark:bg-gray-700">
+          <div className="absolute inset-0 top-0   flex items-center justify-center ">
+            <div className="bg-white   p-4 rounded-lg shadow-lg w-full md:w-md  dark:bg-gray-700">
               <h2 className="text-xl font-semibold mb-4 text-center dark:text-gray-300">
                 {editTask ? "Edit Task" : "Add Task"}
               </h2>
@@ -181,7 +193,7 @@ const App = () => {
                     }
                   }}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full text-gray-500 dark:text-gray-300 text-2xl px-4 py-2 border border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full text-gray-500 dark:text-gray-300 text-2xl px-4 py-2 border border-none rounded-lg focus:outline-none "
                   placeholder="Title"
                 />
               </div>
@@ -196,7 +208,7 @@ const App = () => {
                     }
                   }}
                   onChange={(e) => setDescription(e.target.value)}
-                  className=" overflow-y-hidden text-gray-500 dark:text-gray-300 w-full px-4 py-2 border border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className=" overflow-y-hidden text-gray-500 dark:text-gray-300 w-full px-4 py-2 border border-none rounded-lg focus:outline-none "
                   rows="4"
                   placeholder="Task..."
                 ></textarea>
@@ -212,13 +224,13 @@ const App = () => {
               <div className="flex justify-between">
                 <button
                   onClick={resetTaskForm}
-                  className="px-4 py-2 rounded-lg cursor-pointer dark:text-gray-400 dark:hover:bg-slate-600"
+                  className="px-4 py-2 rounded-lg cursor-pointer dark:text-gray-400 dark:hover:bg-slate-600 text-gray-600"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleAddTask}
-                  className="px-4 py-2 rounded-lg cursor-pointer dark:text-gray-400 dark:hover:bg-slate-600"
+                  className="px-4 py-2 rounded-lg cursor-pointer dark:text-gray-400 dark:hover:bg-slate-600 text-gray-600 "
                 >
                   Save
                 </button>
@@ -229,7 +241,7 @@ const App = () => {
 
         <button
           onClick={() => setIsDarkMode((prevMode) => !prevMode)}
-          className="absolute top-4 right-4 p-1 my-2 rounded-full text-white dark:bg-white dark:text-gray-800"
+          className="absolute top-4 right-4 p-1 my-2 rounded-full text-white dark:bg-white dark:text-gray-800 cursor-pointer"
         >
           {isDarkMode ? (
             <MdDarkMode size={24} className="text-black bg-white" />
