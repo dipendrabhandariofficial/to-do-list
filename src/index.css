@@ -1,6 +1,7 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
-@layer theme, base, components, utilities;
+@layer theme, base, components, utilities,;
 
 
 @layer utilities {
@@ -14,3 +15,4 @@
     --font-courier:"Courier";
     --font-newcourier: "Courier";
   }
+  

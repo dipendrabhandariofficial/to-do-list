@@ -1,96 +1,232 @@
-import React, { useState } from "react";
-import { FaEdit } from "react-icons/fa";
-import { MdFormatListBulletedAdd } from "react-icons/md";
-import { RiDeleteBack2Fill } from "react-icons/ri";
-
+import React, { useState, useEffect, useRef } from "react";
+import { FaCheckCircle, FaEdit } from "react-icons/fa";
+import {
+  MdDarkMode,
+  MdDeleteOutline,
+  MdOutlineLightMode,
+} from "react-icons/md";
 
 const App = () => {
-  const [task, setTask] = useState("");
-  const [tasks, setTasks] = useState([]);
+  const descriptionRef = useRef(null);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [tasks, setTasks] = useState(() => {
+    const savedTasks = localStorage.getItem("tasks");
+    return savedTasks ? JSON.parse(savedTasks) : [];
+  });
+  const [editTask, setEditTask] = useState(null);
+  const [isAddingTask, setIsAddingTask] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      setIsDarkMode(savedTheme === "dark");
+    } else {
+      const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
+      setIsDarkMode(prefersDark);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [isDarkMode]);
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
 
   const handleAddTask = () => {
-    if (task.trim() !== "") {
-      setTasks([...tasks, task]);
-      setTask("");
+    if (title.trim() && description.trim()) {
+      const newTask = {
+        id: Date.now(),
+        title,
+        description,
+        completed: false,
+        editedAt: new Date().toISOString(),
+      };
+      const updatedTasks = editTask
+        ? tasks.map((task) =>
+            task.id === editTask.id
+              ? {
+                  ...task,
+                  title,
+                  description,
+                  editedAt: new Date().toISOString(),
+                }
+              : task
+          )
+        : [...tasks, newTask];
+
+      setTasks(updatedTasks);
+      resetTaskForm();
     }
   };
-  const deleteItem =()=>{
-    setTasks={...newtask,index}
-    
 
-  }
+  const handleDeleteTask = (id) => {
+    setTasks(tasks.filter((task) => task.id !== id));
+  };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleAddTask();
-    }
+  const handleEditTask = (task) => {
+    setEditTask(task);
+    setTitle(task.title);
+    setDescription(task.description);
+  };
+
+  const handleOpenAddTask = () => {
+    resetTaskForm();
+    setIsAddingTask(true);
+  };
+
+  const handleToggleCompletion = (id) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      )
+    );
+  };
+
+  const resetTaskForm = () => {
+    setTitle("");
+    setDescription("");
+    setEditTask(null);
+    setIsAddingTask(false);
   };
 
   return (
-    <div className="w-screen min-h-screen bg-gradient-to-br from-blue-200 via-sky-300 to-blue-400 flex items-center justify-center p-4">
-      
-      <div className="w-full max-w-lg bg-white shadow-2xl shadow-gray-800 rounded-3xl p-6 z-50  ">
-        {/* Header */}
-        <h1 className="text-2xl font-bold text-gray-600 text-center mb-6 shadow-lg">
-           Your's To Do List
+    <div className="w-screen  min-h-screen bg-gradient-to-br from-sky-300 to-indigo-400 flex items-center justify-center p-6 ">
+      <div className="w-full max-w-md bg-white shadow-xl rounded-lg p-6 relative dark:bg-gray-800 dark:text-white">
+        <h1 className="text-3xl font-semibold text-gray-700 mb-8 text-center dark:text-gray-300">
+          Your To-Do List
         </h1>
 
-        {/* Input Section */}
-        <div className="flex gap-4">
-          <input
-            type="text"
-            value={task}
-            onChange={(e) => setTask(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Enter a new task..."
-            className="flex-grow px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 text-gray-700"
-          />
-          <button
-            onClick={handleAddTask}
-            className="bg-sky-500 hover:bg-sky-600 text-white px-6 py-3 rounded-lg font-semibold transition duration-200 cursor-pointer"
-          >
-           <MdFormatListBulletedAdd />
-          </button>
-        </div>
+        <button
+          onClick={handleOpenAddTask}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white w-full py-3 rounded-lg mb-6 font-medium transition duration-200"
+        >
+          + Add New Task
+        </button>
 
-        <div className="showlist text-gray-700 mt-6 text-2xl  font-[300] space-y-4 ">
-          
+        <div className="text-gray-800 dark:text-gray-300">
           <ul className="space-y-4">
-            {tasks.map((task,index)=>(
-              <li 
-              key={index}
-               className="flex items-center cursor-pointer  justify-between px-4 py-3 rounded-lg shadow-sm text-gray-800"
+            {tasks.map((task) => (
+              <li
+                key={task.id}
+                className="flex items-center justify-between px-4 py-3 rounded-lg shadow-sm bg-white dark:bg-gray-700"
               >
-                <input type="checkbox" name="checkbox" id="" className="" />
-                
-                 <span className="w-[70%] capitalize ">{task}</span>
-
-                 <button 
-                  onClick={() =>
-                    setTasks(tasks.filter((_, i) => i !== index))
-                  }
-                 className="text-gray-700   ml-8 cursor-pointer"
-                 >
-                  <FaEdit  />
-                 </button>
-
-                 <button 
-                  onClick={() =>
-                    setTasks(tasks.filter((_, i) => i !== index))
-                  }
-                 className="text-red-700  cursor-pointer"
-                 >
-                  <RiDeleteBack2Fill  />
-                 </button>
-
-                
-            </li>
+                <input
+                  type="checkbox"
+                  checked={task.completed}
+                  onChange={() => handleToggleCompletion(task.id)}
+                  className="cursor-pointer"
+                />
+                <span
+                  className={`flex-grow ml-3 text-lg font-medium ${
+                    task.completed ? "line-through text-gray-400" : ""
+                  }`}
+                >
+                  {task.title}
+                </span>
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => handleEditTask(task)}
+                    className="text-indigo-600 hover:text-indigo-700"
+                  >
+                    <FaEdit size={20} />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteTask(task.id)}
+                    className="text-red-500 hover:text-red-600"
+                  >
+                    <MdDeleteOutline size={20} />
+                  </button>
+                </div>
+              </li>
             ))}
-            </ul>
-          
-          
+          </ul>
         </div>
-       
+
+        {(editTask || isAddingTask) && (
+          <div className="absolute top-0 left-0  flex items-center justify-center ">
+            <div className="bg-white  p-6 rounded-lg shadow-lg w-full sm:w-md dark:bg-gray-700">
+              <h2 className="text-xl font-semibold mb-4 text-center dark:text-gray-300">
+                {editTask ? "Edit Task" : "Add Task"}
+              </h2>
+              <div className="mb-4">
+                <input
+                  type="text"
+                  value={title}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault(); // Prevent default Enter behavior (new line)
+                      descriptionRef.current.focus(); // Focus on description field
+                    }
+                  }}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-full text-gray-500 dark:text-gray-300 text-2xl px-4 py-2 border border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="Title"
+                />
+              </div>
+              <div className="mb-6 relative">
+                <textarea
+                  ref={descriptionRef}
+                  value={description}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      setTitle(title); // Set the title
+                      handleAddTask(); // Call the handleAddTask function
+                    }
+                  }}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className=" overflow-y-hidden text-gray-500 dark:text-gray-300 w-full px-4 py-2 border border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  rows="4"
+                  placeholder="Task..."
+                ></textarea>
+                <div className="absolute right-0 text-sm text-gray-500">
+                  Edited at{" "}
+                  {editTask &&
+                    new Date(editTask?.editedAt).toLocaleString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })}
+                </div>
+              </div>
+              <div className="flex justify-between">
+                <button
+                  onClick={resetTaskForm}
+                  className="px-4 py-2 rounded-lg cursor-pointer dark:text-gray-400 dark:hover:bg-slate-600"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleAddTask}
+                  className="px-4 py-2 rounded-lg cursor-pointer dark:text-gray-400 dark:hover:bg-slate-600"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <button
+          onClick={() => setIsDarkMode((prevMode) => !prevMode)}
+          className="absolute top-4 right-4 p-1 my-2 rounded-full text-white dark:bg-white dark:text-gray-800"
+        >
+          {isDarkMode ? (
+            <MdDarkMode size={24} className="text-black bg-white" />
+          ) : (
+            <MdOutlineLightMode size={24} className="text-amber-300 bg-white" />
+          )}
+        </button>
       </div>
     </div>
   );
