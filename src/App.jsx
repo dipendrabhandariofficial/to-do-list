@@ -157,16 +157,16 @@ const App = () => {
                   </p>
                 </span>
 
-                <div className="flex gap-4">
+                <div className="flex gap-4 ">
                   <button
                     onClick={() => handleEditTask(task)}
-                    className="text-indigo-600 hover:text-indigo-700"
+                    className="text-indigo-600 hover:text-indigo-700 cursor-pointer"
                   >
                     <FaEdit size={20} />
                   </button>
                   <button
                     onClick={() => handleDeleteTask(task.id)}
-                    className="text-red-500 hover:text-red-600"
+                    className="text-red-500 hover:text-red-600 cursor-pointer"
                   >
                     <MdDeleteOutline size={20} />
                   </button>
